@@ -26,7 +26,7 @@ const Rickandmorty = () => {
             <>
               <div className="card">
                 <img
-                  className="shadow bg-body rounded"
+                  className="shadow bg-body rounded rounded-circle"
                   src={personaje.image}
                   alt=" "
                 />

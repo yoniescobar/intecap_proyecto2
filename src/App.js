@@ -1,5 +1,7 @@
 import React,{useState,useEffect} from 'react'
+import Formulario from './components/Formulario'
 import Home from './components/Home'
+import Listas from './components/Listas'
 import Navbar from './components/Navbar'
 import Rickandmorty from './components/Rickandmorty'
 
@@ -39,7 +41,9 @@ useEffect(() => {
 
       {/* <Navbar/> */}
       {/* <Home Autos={Autos}  nombre={nombre} setAppClicked ={()=>setAppClicked(state=>!state)}/> */}
-      <Rickandmorty/>
+      {/* <Rickandmorty/> */}
+      {/* <Listas/> */}
+      <Formulario/>
 
     </div>
   )
