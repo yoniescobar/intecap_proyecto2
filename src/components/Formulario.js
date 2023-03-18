@@ -11,31 +11,38 @@ const Formulario = () => {
     const[lista,setLista]=useState([])
 
 
-    const llenarCampos = (campo) => {
+    const llenarCampos = (dato) => {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: ` El campo: ${campo} esta vacio`,
+            text: ` El campo: ${dato} esta vacio`,
             })
     }
         
 
     const guardarDatos = (e) => {
         e.preventDefault() //evita que se recargue la pagina
-        
-        if(!nombre.trim()){ //trim() elimina espacios en blanco
-            llenarCampos(nombre)
-        }if(!apellido.trim()){
-            llenarCampos()
+        if(nombre.trim()===''){
+            llenarCampos('Nombre')
+            return
         }
-        if(!edad.trim()){
-            llenarCampos()
+        if(apellido.trim()===''){
+            llenarCampos('Apellido')
+            return
         }
-        if(!correo.trim()){
-            llenarCampos()
+        if(edad.trim()===''){
+            llenarCampos('Edad')
+            return
         }
+        if(correo.trim()===''){
+            llenarCampos('Correo')
+            return
+        }
+
     //setPersona({nombre,apellido,edad,correo}) //agrega los datos al objeto persona
-        setLista([...lista,{nombre,apellido,edad,correo}]) //agrega los datos al array lista
+        setLista([
+            ...lista,
+            {nombre,apellido,edad,correo}]) //agrega los datos al array lista
 
         //limpiar campos
         e.target.reset()
@@ -44,8 +51,64 @@ const Formulario = () => {
         setEdad('')
         setCorreo('')
 
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Datos guardados',
+            showConfirmButton: false,
+            timer: 1500
+            })
+
     }
 
+    const eliminar = (index) => { //2 parametros, el primero es el item y el segundo es el index
+        
+        Swal.fire({
+            title: 'Estas seguro de eliminar el registro?',
+            text: "No podras revertir esta accion!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar!'
+            }).then((result) => {
+            
+                if (result.isConfirmed) {
+                const arrayFiltrado = lista.filter((item,indexLista)=>indexLista!==index)
+                setLista(arrayFiltrado)
+                Swal.fire(
+                'Eliminado!',
+                'El registro ha sido eliminado.',
+                'success'
+                )
+            }
+            })
+    }
+
+
+    const editar = (item) => {
+        item.preventDefault() //evita que se recargue la pagina
+        if(!lista.trim()){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'No hay datos para editar',
+                })
+                return
+        }
+
+        const arrayEditado = lista.map((item,index)=>(
+            {
+                nombre: nombre ? nombre : item.nombre,
+                apellido: apellido ? apellido : item.apellido,
+                edad: edad ? edad : item.edad,
+                correo: correo ? correo : item.correo
+
+                
+            }))
+            setLista(arrayEditado)
+            
+        }        
 
    
 
@@ -80,7 +143,7 @@ const Formulario = () => {
                 onChange={(e)=>{setCorreo(e.target.value)}}
                 />
 
-            <button className='btn btn-primary' >Enviar</button>
+            <button className='btn btn-primary' >Guardar Datos</button>
 
          </form>  
 
@@ -88,11 +151,18 @@ const Formulario = () => {
                 <h1>Lista de personas</h1>
                 <ul className='list-group'>
                     {
-                        lista.map((item,index)=>( 
-                            <li className='list-group-item' key={index}>
-                                {item.nombre} - {item.apellido} - {item.edad} - {item.correo}
-                            </li>
-                        ))
+                        lista.length===0 ? (
+                            <li className='list-group-item'>No hay personas Registradas..</li>
+                        ) : (
+                            lista.map((item,index)=>( 
+                                <li className='list-group-item' key={index}>
+                                    {item.nombre} - {item.apellido} - {item.edad} - {item.correo} 
+                                    <button className='btn btn-danger' onClick={()=>{eliminar(index)}}>Eliminar</button> {''}
+                                     <button className='btn btn-warning' onClick={()=>{editar(item)}} >Editar</button>
+                                     
+                                </li>
+                            ))
+                        )
                     }
                 </ul>
             </div>
