@@ -1,4 +1,5 @@
 import React,{useState} from 'react'
+import DataTable from 'react-data-table-component'
 import Swal from 'sweetalert2'
 
 const Formulario = () => {
@@ -95,7 +96,7 @@ const Formulario = () => {
             return
         }
 
-        const editado = lista.map(persona=>persona.codigo===codigo?{codigo,nombre,apellido,edad,correo}:persona)
+        const editado = lista.map(persona => persona.codigo === codigo ? {codigo,nombre,apellido,edad,correo} : persona)
         setLista(editado)
         setModoEdicion(false)
 
@@ -114,10 +115,7 @@ const Formulario = () => {
     }
     
 
-    const eliminar = (codigo) => { //2 parametros, el primero es el item y el segundo es el index
-
-  
-        
+    const eliminar = (codigo) => { //2 parametros, el primero es el item y el segundo es el index      
         Swal.fire({
             title: 'Estas seguro de eliminar el registro?',
             text: "No podras revertir esta accion!",
@@ -130,8 +128,6 @@ const Formulario = () => {
             
                 if (result.isConfirmed) {
                 const filtro = lista.filter((persona)=>persona.codigo!==codigo) //filtra el array y devuelve un nuevo array con los elementos que cumplan la condiciones de la funcion de callback
-                
-                
                 setLista(filtro)
                 debugger
                 Swal.fire(
@@ -187,7 +183,7 @@ const Formulario = () => {
                     (<button className='btn btn-warning btn-block' 
                       onClick={(e)=>{guardarCambios(e)}} type="submit">Guardar Cambios</button>):
                     (<button className='btn btn-primary btn-block' 
-                    onClick={(e)=>{agregarUsuario(e)}}>Agregar Usuario</button>)
+                    onClick={(e)=>{agregarUsuario(e)}} type="submit"><i className="bi bi-plus-circle-fill"></i> Agregar Usuario</button>)
 
               }      
 
@@ -197,23 +193,60 @@ const Formulario = () => {
 
          <div className='container py-5'>
                 <h1>Lista de personas</h1>
-                <ul className='list-group'>
-                    {
-                        lista.length===0 ? (
-                            <li className='list-group-item'>No hay personas Registradas..</li>
-                        ) : (
-                            lista.map(persona=>( 
-                                <li className='list-group-item' key={codigo}>
-                                   {persona.codigo} -{persona.nombre} - {persona.apellido} - {persona.edad} - {persona.correo} 
-                                    <button className='btn btn-danger' onClick={()=>{eliminar(persona.codigo)}}>Eliminar</button> {''}
-                                     <button className='btn btn-warning' onClick={()=>{editar(persona)}}  >Editar</button>
-                                     
-                                </li>
-                            ))
-                        )
-                    }
-                </ul>
-            </div>
+                <DataTable
+                    columns={[
+                        {
+                            name: 'codigo',
+                            selector: (row) => row.codigo,
+                            sortable: true,
+                        },
+                        {
+                            name: 'Nombre',
+                            selector: (row) => row.nombre,
+                            sortable: true,
+                        },
+                        {
+                            name: 'Apellido',
+                            selector: (row) => row.apellido,
+                            sortable: true,
+                        },
+                        {
+                            name: 'Edad',
+                            selector: (row) => row.edad,
+                            sortable: true,
+                        },
+                        {
+                            name: 'Correo',
+                            selector: (row) => row.correo,
+                            sortable: true,
+                        },
+                        {
+                            name: 'Acciones',
+                            cell: (row) => (<div>
+                                <button className='btn btn-primary' onClick={()=>{editar(row)}}><i className="bi bi-pencil-square"></i></button>
+                                <button className='btn btn-danger' onClick={()=>{eliminar(row.codigo)}}><i className="bi bi-trash"></i></button>
+                            </div>
+                            ),
+                        }
+                    ]}
+
+
+                    data={lista}
+                    pagination
+                    paginationComponentOptions={{
+                        rowsPerPageText: 'Filas por pagina:',
+                        rangeSeparatorText: 'de',
+                        noRowsPerPage: false,
+                        selectAllRowsItem: true,
+                        selectAllRowsItemText: 'Todos'
+                    }}
+                    highlightOnHover  //resalta la fila al pasar el mouse
+                    pointerOnHover    //cambia el cursor al pasar el mouse
+                    fixedHeader
+
+                />
+                
+        </div>
 
 
     </div>
